@@ -86,7 +86,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     // first measurement
     cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
-    ekf_.x_ << 1, 1, 0.5, 0.5;    // Last 2 values can supposedly affect RMSE, need to experiment with them.
+    ekf_.x_ << 1, 1, 1, 1;    // Last 2 values can supposedly affect RMSE, need to experiment with them.
 
     
     // MY CODE:
