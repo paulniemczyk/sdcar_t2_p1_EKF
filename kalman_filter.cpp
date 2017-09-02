@@ -48,6 +48,7 @@ void KalmanFilter::Update(const VectorXd &z) {
   // ... otherwise +/- 2pi until it is
   // Note: y(1) is phi
   
+  /*
   // normalize the angle = atan2(sin(angle),cos(angle));
   y(1) = atan2(sin(y(1)), cos(y(1)));
   const double pi = 3.14159265358979323846;
@@ -61,6 +62,8 @@ void KalmanFilter::Update(const VectorXd &z) {
     y(1) = y(1) - 2*pi;
     cout << " .....Now it's: " << y(1) << endl;
   }
+
+  */
 
   // R_ is set to R_laser_ in FusionEKF::ProcessMeasurement() 
   MatrixXd S = H_ * P_ * H_.transpose() + R_; 
