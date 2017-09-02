@@ -39,32 +39,29 @@ FusionEKF::FusionEKF() {
   */
 
   // Measurement matrix H. 
-  // H_laser is just the H matrix from the lesson
+  // H_laser is  the H matrix from the lesson
   // Note that Hj is calculated below in ProcessMeasurement() 
-  
   H_laser_ << 1, 0, 0, 0,   // From lesson 5 section 10
               0, 1, 0, 0;
 
   // State transition F initial
+  /*
   ekf_.F_ = MatrixXd(4,4);
   ekf_.F_ << 1, 0, 1, 0,
             0, 1, 0, 1,
             0, 0, 1, 0,
             0, 0, 0, 1;
+  */
 
   // State covariance P
   // initialize P_ - I used values of 1 and 1000 from lesson
   ekf_.P_ = MatrixXd(4,4);
   ekf_.P_ << 1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1000, 0,
-            0, 0, 0, 1000;
-    
-
-  // Process noise Q initial
-  // noise_ax = 9;   // provided below but don't need this -- why was this in the overview video?
-  // noise_ay = 9;
+              0, 1, 0, 0,
+              0, 0, 1000, 0,
+              0, 0, 0, 1000;
   
+
 
 }
 
@@ -89,7 +86,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     // first measurement
     cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
-    ekf_.x_ << 1, 1, 1, 1;    // Last 2 values can supposedly affect RMSE, need to experiment with them.
+    ekf_.x_ << 1, 1, 0.5, 0.5;    // Last 2 values can supposedly affect RMSE, need to experiment with them.
 
     
     // MY CODE:
@@ -110,7 +107,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       float py = rho * sin(phi);
 
 
-      ekf_.x_ << px, py, 0, 0;    // Initialized vx, vy with 0
+      ekf_.x_(0) = px;    // Initialized vx, vy with 0
+      ekf_.x_(1) = py;
 
 
     }
@@ -122,13 +120,25 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       // MY CODE
       // Set initial state and zero velocity directly from sensor, since it's laser
       // Load just px, py, and vx=vy=0 since it's a laser 
-      ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+      
+      ekf_.x_(0) = measurement_pack.raw_measurements_[0];
+      ekf_.x_(1) = measurement_pack.raw_measurements_[1];
 
 
     }
 
     
     // MY CODE
+    
+    ekf_.F_ = MatrixXd::Identity(4,4);
+    /*
+    ekf_.F_ = MatrixXd(4,4);
+    ekf_.F_ << 1, 0, 1, 0,
+                0, 1, 0, 1,
+                0, 0, 1, 0;
+    */
+
+
     previous_timestamp_ = measurement_pack.timestamp_;
 
     // done initializing, no need to predict or update
