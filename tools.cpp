@@ -76,8 +76,14 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 		return Hj;
 	}
 
-	/*
-	//compute the Jacobian MatrixXd
+	// Lesson version
+	Hj << (px/c2), (py/c2), 0, 0,
+		  -(py/c1), (px/c1), 0, 0,
+		  py*(vx*py - vy*px)/c3, px*(px*vy - py*vx)/c3, px/c2, py/c2;
+
+
+	/* 
+	// My Version
 	float term_0_0 = px/(sqrt(px*px + py*py));
 	float term_0_1 = py/(sqrt(px*px + py*py));
 	float term_0_2 = 0.0;
@@ -88,8 +94,8 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 	float term_1_2 = 0.0;
 	float term_1_3 = 0.0;
 	
-	float term_2_0 = (py*(vx*py-vy*px))/(pow((px*px+py*py),3/2));
-	float term_2_1 = (px*(vy*px-vx*py))/(pow((px*px+py*py), 3/2));
+	float term_2_0 = (py*(vx*py-vy*px))/(pow((px*px+py*py),1.5));
+	float term_2_1 = (px*(vy*px-vx*py))/(pow((px*px+py*py), 1.5));
 	float term_2_2 = px/(sqrt(px*px + py*py));
 	float term_2_3 = py/(sqrt(px*px + py*py));
 	
@@ -98,10 +104,6 @@ MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
 	        term_2_0, term_2_1, term_2_2, term_2_3;
 	*/
 
-	Hj << (px/c2), (py/c2), 0, 0,
-		  -(py/c1), (px/c1), 0, 0,
-		  py*(vx*py - vy*px)/c3, px*(px*vy - py*vx)/c3, px/c2, py/c2;
-	
 	return Hj;
 
 }
