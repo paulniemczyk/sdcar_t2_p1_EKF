@@ -43,36 +43,13 @@ void KalmanFilter::Update(const VectorXd &z) {
   // Laser uses normal Update()
   VectorXd z_pred = H_ * x_;    // Note: z is from measurement pack
   VectorXd y = z - z_pred;   
-  
-  // Check to make sure phi in vector y is in the range [-pi, pi]...
-  // ... otherwise +/- 2pi until it is
-  // Note: y(1) is phi
-  
-  /*
-  // normalize the angle = atan2(sin(angle),cos(angle));
-  y(1) = atan2(sin(y(1)), cos(y(1)));
-  const double pi = 3.14159265358979323846;
-  if (y(1) < -pi) {
-    cout << "Update() -- PHI < -3.14!!!!  PHI= " << y(1);
-    y(1) = y(1) + 2*pi;
-    cout << " .....Now it's: " << y(1) << endl;
-  }
-  else if (y(1) > pi) {
-    cout << "PHI > 3.14!!!!  PHI= " << y(1);
-    y(1) = y(1) - 2*pi;
-    cout << " .....Now it's: " << y(1) << endl;
-  }
-
-  */
 
   // R_ is set to R_laser_ in FusionEKF::ProcessMeasurement() 
   MatrixXd S = H_ * P_ * H_.transpose() + R_; 
   MatrixXd K =  P_ * H_.transpose() * S.inverse();
 
-  
   // Update state x and new P with a new estimate
   x_ = x_ + (K * y);
-
   long x_size = x_.size();
   MatrixXd I = MatrixXd::Identity(x_size, x_size);
   P_ = (I - K * H_) * P_;
